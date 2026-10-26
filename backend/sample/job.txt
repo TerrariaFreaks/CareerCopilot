@@ -1,0 +1,1 @@
+Junior Full-Stack Developer. Build features across our React frontend and Python backend. Design REST APIs, work with PostgreSQL, write tests, collaborate with a small team. Required: Python, React, SQL, REST APIs, Git. Nice to have: Docker, CI/CD, experience with AI or LLM APIs.
