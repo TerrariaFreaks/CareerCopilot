@@ -9,9 +9,13 @@ from app.llm import QuotaExceeded, usage
 from app.database import Base, engine
 import app.models  # noqa: F401  (importing registers the tables)
 
+from app.auth import router as auth_router
+
 app = FastAPI(title="Career Copilot")
 
 Base.metadata.create_all(bind=engine)
+
+app.include_router(auth_router)
 
 # Let the React dev server (Vite's default port, plus 3000) call this API from the browser.
 app.add_middleware(
