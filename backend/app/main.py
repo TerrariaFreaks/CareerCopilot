@@ -6,7 +6,12 @@ from pydantic import BaseModel, Field
 from app.agent import run_agent
 from app.llm import QuotaExceeded, usage
 
+from app.database import Base, engine
+import app.models  # noqa: F401  (importing registers the tables)
+
 app = FastAPI(title="Career Copilot")
+
+Base.metadata.create_all(bind=engine)
 
 # Let the React dev server (Vite's default port, plus 3000) call this API from the browser.
 app.add_middleware(
