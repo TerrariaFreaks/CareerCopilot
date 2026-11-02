@@ -1,11 +1,13 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
 import app.models  # noqa: F401  (importing registers the tables)
 from app.applications import router as applications_router
 from app.auth import router as auth_router
-from app.database import Base, engine
+from app.database import Base, engine, get_db
 from app.deps import get_current_user
+from app.limits import RUNS_PER_DAY, runs_today
 from app.llm import usage
 from app.models import User
 from app.profiles import router as profiles_router
@@ -33,5 +35,11 @@ def health():
 
 
 @app.get("/api/usage")
-def get_usage(_: User = Depends(get_current_user)):
-    return usage()
+def get_usage(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    used = runs_today(db, user.id)
+    return {
+        **usage(),
+        "runs_today": used,
+        "runs_per_day": RUNS_PER_DAY,
+        "runs_left": max(RUNS_PER_DAY - used, 0),
+    }
